@@ -11,7 +11,7 @@
             [pandect.algo.sha256 :as sha256]))
 
 (def test-source
-"(ns my.core
+ "(ns my.core
   (:require [quil.core :as q :include-macros true]))
 
 (defn setup []
