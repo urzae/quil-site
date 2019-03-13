@@ -10,38 +10,25 @@
             [clojure.core.cache :as c]
             [pandect.algo.sha256 :as sha256]))
 
-(def test-source "(ns my.core
-  (:require [quil.core :as q :include-macros true]
-            [quil.middleware :as m]))
+(def test-source
+"(ns my.core
+  (:require [quil.core :as q :include-macros true]))
 
 (defn setup []
-  (q/frame-rate 30)
-  (q/color-mode :hsb)
-  {:color 0
-   :angle 0})
+  (q/frame-rate 60)
+  (q/color-mode :rgb))
 
-(defn update-state [state]
-  (let [{:keys [color angle]} state]
-    {:color (mod (+ color 0.7) 255)
-     :angle (mod (+ angle 0.1) q/TWO-PI)}))
-
-(defn draw-state [state]
-  (q/background 240)
-  (q/fill (:color state) 255 255)
-  (let [angle (:angle state)
-        x (* 150 (q/cos angle))
-        y (* 150 (q/sin angle))]
-    (q/with-translation [(/ (q/width) 2)
-                         (/ (q/height) 2)]
-      (q/ellipse x y 100 100))))
+(defn draw []
+  (q/background 255 255 255)
+  (let [t (q/millis)]
+    (q/fill 255 0 0)
+    (q/ellipse 300 300 200 200)))
 
 (q/defsketch my
   :host \"host\"
-  :size [500 500]
+  :size [600 600]
   :setup setup
-  :update update-state
-  :draw draw-state
-  :middleware [m/fun-mode])")
+  :draw draw)")
 
 (def id (atom 0))
 (def sketches (atom (c/lru-cache-factory {} :threshold 128)))
