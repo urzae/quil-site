@@ -10,7 +10,8 @@
             [clojure.core.cache :as c]
             [pandect.algo.sha256 :as sha256]))
 
-(def test-source "(ns my.core)
+(def test-source
+"(ns my.core
   (:require [quil.core :as q :include-macros true]))
 
 (defn setup []
@@ -21,7 +22,7 @@
   (q/background 255 255 255)
   (let [t (q/millis)]
     (q/fill 255 0 0)
-    (q/ellipse 0 0 200 200)))
+    (q/ellipse 300 300 200 200)))
 
 (q/defsketch my
   :host \"host\"
