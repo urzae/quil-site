@@ -18,6 +18,8 @@
                  [pandect "0.6.1"]
                  [jayq "2.5.5"]
                  [zprint "0.4.10"]
+                 [rewrite-clj "0.6.1"]
+                 [gil "1.0.0-SNAPSHOT"]
 
                  [org.clojure/clojurescript "1.10.238"]]
 
