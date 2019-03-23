@@ -94,7 +94,7 @@
              [:div.form-group
               [:label "Number of frames"]
               [:input.form-control
-               {:type :number :value 180 :id "frames-input"}]]]]
+               {:type :number :value 1 :id "frames-input"}]]]]
            [:div.modal-footer
             [:button.btn.btn-success
              {:id "save-button"}
