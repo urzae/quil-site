@@ -34,7 +34,12 @@
            {:data-toggle "tooltip"
             :data-placement "bottom"
             :title "Share sketch via URL."}
-           "Share"]]
+           "Share"]
+          [:button#save.btn
+           {:data-toggle "tooltip"
+            :data-placement "bottom"
+            :title "Save sketch as GIF."}
+           "Save as GIF"]]
          [:dev#result-status.alert
           {:role "alert"}]]
 
@@ -55,7 +60,7 @@
          {:tabindex "-1"
           :id "share-dialog"
           :role "dialog"}
-         [:div.modal-dialog.modal-sm
+         [:div.modal-dialog
           [:div.modal-content
            [:div.modal-header
             [:button.close
@@ -65,4 +70,53 @@
              [:span {:aria-hidden "true"} "&times"]]
             [:h4.modal-title "Share URL"]]
            [:div.modal-body
-            [:input.form-control {:readonly "readonly"}]]]]]))
+            [:input.form-control {:readonly "readonly"}]]]]]
+
+        [:div.modal.fade
+         {:tabindex "-1"
+          :id "save-dialog"
+          :role "dialog"}
+         [:div.modal-dialog.modal-sm
+          [:div.modal-content
+           [:div.modal-header
+            [:button.close
+             {:type "button"
+              :data-dismiss "modal"
+              :aria-label "Close"}
+             [:span {:aria-hidden "true"} "&times"]]
+            [:h4.modal-title "Save as GIF"]]
+           [:div.modal-body
+            [:form {:id "save-form"}
+             [:div.form-group
+              [:label "Name"]
+              [:input.form-control
+               {:type :text :id "name-input" :value "Animation"}]]
+             [:div.form-group
+              [:label "Number of frames"]
+              [:input.form-control
+               {:type :number :value 180 :id "frames-input"}]]]]
+           [:div.modal-footer
+            [:button.btn.btn-success
+             {:id "save-button"}
+             "Save"]]]]]
+
+        [:div.modal.fade
+         {:tabindex "-1"
+          :id "gif-dialog"
+          :role "dialog"}
+         [:div.modal-dialog.modal-sm
+          [:div.modal-content
+           [:div.modal-header
+            [:button.close
+             {:type "button"
+              :data-dismiss "modal"
+              :aria-label "Close"}
+             [:span {:aria-hidden "true"} "&times"]]
+            [:h4.modal-title "Exported GIF"]]
+           [:div.modal-body
+            [:p
+              [:a {:id "gif-link" :target "_blank"}
+               "Download GIF image"]]
+            [:p
+             [:a {:id "source-link" :target "_blank"}
+              "Download source code"]]]]]]))

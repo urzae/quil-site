@@ -128,6 +128,37 @@
         (show-share-dialog %)))
   (report-action "share"))
 
+(defn show-save-dialog []
+  (.modal (j/$ "#save-dialog") "show"))
+
+(defn hide-save-dialog []
+  (.modal (j/$ "#save-dialog") "hide"))
+
+(defn save-gif []
+  (let [code (.getValue @editor)
+        name   (-> (j/$ :#name-input)
+                   (.val))
+        frames (-> (j/$ :#frames-input)
+                   (.val)
+                   (or 1))]
+     (hide-save-dialog)
+     (j/ajax
+      {:url "/sketches/export"
+       :method "POST"
+       :data (.stringify js/JSON #js {:cljs code
+                                      :name (cond-> name
+                                              (cstr/blank? name)
+                                              (str (random-uuid)))
+                                      :frames frames})
+       :contentType "application/json"
+       :success (fn [resp]
+                  (let [resp (js->clj resp :keywordize-keys true)]
+                    (-> (j/$ "#source-link")
+                        (j/attr {:href (:source-url resp)}))
+                    (-> (j/$ "#gif-link")
+                        (j/attr {:href (:image-url resp)}))
+                    (.modal (j/$ "#gif-dialog") "show")))})))
+
 (defn compile
   ([]
    (compile (.getValue @editor)))
@@ -254,18 +285,18 @@
            js/CodeMirror
            (first (j/$ "#source"))
            #js
-            {:mode "clojure"
-             :lineNumbers true
-             :gutters #js ["CodeMirror-lint-markers"]
-             :lint #js {:options #js {:cljsErrors #js []}}
-             :viewportMargin js/Infinity
-             :matchBrackets true
-             :autoCloseBrackets true
-             :extraKeys #js {"Ctrl-Enter" compile-selected}}))
+           {:mode "clojure"
+            :lineNumbers true
+            :gutters #js ["CodeMirror-lint-markers"]
+            :lint #js {:options #js {:cljsErrors #js []}}
+            :viewportMargin js/Infinity
+            :matchBrackets true
+            :autoCloseBrackets true
+            :extraKeys #js {"Ctrl-Enter" compile-selected}}))
 
-   (.init
-    js/parinferCodeMirror
-    @editor)
+  (.init
+   js/parinferCodeMirror
+   @editor)
 
   (let [id (j/data (j/$ "#source") "sketch-id")
         local (j/data (j/$ "#source") "is-local")]
@@ -280,6 +311,8 @@
                                   (reset-iframe)
                                   (report-action "reset")))
   (j/on (j/$ "#share") "click" share)
+  (j/on (j/$ "#save") "click" show-save-dialog)
+  (j/on (j/$ "#save-button") "click" save-gif)
   (j/on (j/$ "body") "click" "#share-dialog input" #(this-as el (.select el)))
   (j/on (j/$ js/window) "message"
         (fn [event]

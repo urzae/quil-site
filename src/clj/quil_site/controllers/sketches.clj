@@ -2,13 +2,15 @@
   (:require [compojure.core :refer :all :exclude [routes]]
             [compojure.route :refer [not-found]]
             [clojure.java.io :as io]
+            [clojure.string :as cstr]
             [ring.util.response :as resp]
             [quil-site.views.sketches :as views]
             [quil-site.examples :refer [get-example-source]]
             [quil-site.storage :as s]
             [quil-site.snippets :as snippets]
             [clojure.core.cache :as c]
-            [pandect.algo.sha256 :as sha256]))
+            [pandect.algo.sha256 :as sha256]
+            [rewrite-clj.zip :as z]))
 
 (def test-source
  "(ns my.core
@@ -96,10 +98,41 @@
       (resp/response {:result :error
                       :message "Server error"}))))
 
+(defn save-as-gif [cljs gif-file frames]
+  (let [out  (-> (z/of-string cljs)
+                 (z/find-value z/next :require)
+                 z/rightmost
+                 (z/insert-right '[gil.core :as g])
+                 (z/find-value z/next 'draw)
+                 z/rightmost
+                 (z/insert-right (list 'g/save-animation gif-file frames 2))
+                 z/right
+                 (z/insert-right
+                   (list 'when
+                     (list '< frames
+                       (list 'q/frame-count))
+                     (list 'q/exit)))
+                 z/->root-string)]
+    (io/make-parents gif-file)
+    (load-string out)))
+
+(defn export-sketch [{:keys [cljs name frames]}]
+  (let [frames (Integer. (re-find  #"\d+" frames))
+        name (cstr/replace name #" " "_")
+        uuid (.toString (java.util.UUID/randomUUID))
+        gif-file (str "/out/" uuid "/" name ".gif")
+        clj-file (str "/out/" uuid "/" name ".clj")]
+    (io/make-parents (str "public" clj-file))
+    (spit (str "public" clj-file) cljs)
+    (save-as-gif cljs (str "public" gif-file) frames)
+    (resp/response {:image-url gif-file
+                    :source-url clj-file})))
+
 (defroutes routes
   (context "/sketches" []
     (GET "/create" [] (views/sketch-page "basic" false))
     (GET "/info/:id" [id] (sketch-info id))
     (GET "/show/:id" [id] (views/sketch-page id false))
     (GET "/local/:id" [id] (views/sketch-page id true))
-    (POST "/create" req (create-sketch (:body req)))))
+    (POST "/create" req (create-sketch (:body req)))
+    (POST "/export" req (export-sketch (:body req)))))
