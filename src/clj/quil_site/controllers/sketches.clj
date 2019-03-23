@@ -22,13 +22,13 @@
 
 (defn draw []
   (q/background 255 255 255)
-  (let [t (q/millis)]
+  (let [t (q/frame-count)]
     (q/fill 255 0 0)
-    (q/ellipse 300 300 200 200)))
+    (q/ellipse 250 250 200 200)))
 
 (q/defsketch my
   :host \"host\"
-  :size [600 600]
+  :size [500 500]
   :setup setup
   :draw draw)")
 
