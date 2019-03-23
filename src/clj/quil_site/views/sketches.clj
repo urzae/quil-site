@@ -20,17 +20,17 @@
             :data-placement "bottom"
             :title "Run sketch. Use Ctrl+Enter to eval selected code or eval a form under cursor."}
            "Run"]
-          [:button#reset.btn
+          [:button#reset.btn.btn-default
            {:data-toggle "tooltip"
             :data-placement "bottom"
             :title "Reset drawing area. Doesn't affect code."}
            "Clear"]
-          [:button#hide.btn.disabled
+          [:button#hide.btn.btn-default.disabled
            {:data-toggle "tooltip"
             :data-placement "bottom"
             :title "Hide drawing area revealing editor."}
            "Hide"]
-          [:button#share.btn
+          [:button#share.btn.btn-default
            {:data-toggle "tooltip"
             :data-placement "bottom"
             :title "Share sketch via URL."}
