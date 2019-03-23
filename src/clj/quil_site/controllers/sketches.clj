@@ -86,12 +86,8 @@
 (defn create-sketch [sketch]
   (try
     (let [sketch (sketch-from-source (:cljs sketch) nil)
-          id (:id sketch)
-          now (.format (java.text.SimpleDateFormat. "yyMMdd-HHmm")
-                       (java.util.Date.))
-          filename (str "shared/" now "-" id ".clj")]
+          id (:id sketch)]
       (swap! sketches assoc id sketch)
-      (spit filename (:cljs sketch))
       (sketch-info id))
     (catch java.lang.Exception e
       (.printStackTrace e)
