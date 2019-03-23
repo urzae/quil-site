@@ -13,7 +13,7 @@
             [rewrite-clj.zip :as z]))
 
 (def test-source
-"(ns my.core
+ "(ns my.core
   (:require [quil.core :as q :include-macros true]))
 
 (defn setup []
