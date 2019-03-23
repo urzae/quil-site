@@ -35,7 +35,7 @@
             :data-placement "bottom"
             :title "Share sketch via URL."}
            "Share"]
-          [:button#save.btn
+          [:button#save.btn.btn-default
            {:data-toggle "tooltip"
             :data-placement "bottom"
             :title "Save sketch as GIF."}
