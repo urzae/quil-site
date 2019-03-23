@@ -95,11 +95,16 @@
                       :message "Server error"}))))
 
 (defn save-as-gif [cljs gif-file frames]
-  (let [out  (-> (z/of-string cljs)
+  (let [draw-fn (-> (z/of-string cljs)
+                    (z/find-value z/next 'q/defsketch)
+                    (z/find-value :draw)
+                    z/right
+                    z/sexpr)
+        out  (-> (z/of-string cljs)
                  (z/find-value z/next :require)
                  z/rightmost
                  (z/insert-right '[gil.core :as g])
-                 (z/find-value z/next 'draw)
+                 (z/find-value z/next draw-fn)
                  z/rightmost
                  (z/insert-right (list 'g/save-animation gif-file frames 2))
                  z/right
